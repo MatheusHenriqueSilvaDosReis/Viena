@@ -5,3 +5,5 @@ uvicorn
 supabase
 
 python-dotenv
+
+email-validator
