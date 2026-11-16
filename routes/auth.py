@@ -22,7 +22,7 @@ def cadastrar_usuario(usuario: UsuarioCadastro):
         if not resposta.user:
             raise HTTPException(
                 status_code=400,
-                detail="Não foi possível criar a conta"
+                detail="Não foi possível criar a conta."
             )
 
         return {
@@ -39,9 +39,10 @@ def cadastrar_usuario(usuario: UsuarioCadastro):
 
     except Exception as erro:
         print("ERRO REAL NO CADASTRO:", repr(erro))
+
         raise HTTPException(
             status_code=400,
-            detail="Erro ao realizar cadastro"
+            detail="Erro ao realizar cadastro. Confira os dados."
         )
 
 
@@ -49,14 +50,14 @@ def cadastrar_usuario(usuario: UsuarioCadastro):
 def fazer_login(dados: LoginUsuario):
     try:
         resposta = supabase.auth.sign_in_with_password({
-            "email": dados.email,
+            "email": dados.email.strip(),
             "password": dados.senha
         })
 
-        if resposta.session is None:
+        if not resposta.user or not resposta.session:
             raise HTTPException(
                 status_code=401,
-                detail="Não foi possível autenticar"
+                detail="Não foi possível autenticar. Verifique seu e-mail e senha."
             )
 
         return {
@@ -74,7 +75,8 @@ def fazer_login(dados: LoginUsuario):
 
     except Exception as erro:
         print("ERRO REAL NO LOGIN:", repr(erro))
+
         raise HTTPException(
             status_code=401,
-            detail="Email ou senha incorretos"
+            detail="Falha na autenticação. Verifique o e-mail, a senha e a confirmação da conta."
         )
